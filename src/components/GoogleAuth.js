@@ -1,4 +1,5 @@
 import React from "react";
+import { gapi, loadClientAuth2 } from 'gapi-script';
 import { withStyles } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
@@ -16,18 +17,12 @@ const styles = {
 
 class GoogleAuth extends React.Component {
     componentDidMount() {
-        window.gapi.load("client:auth2", () => {
-            window.gapi.client
-                .init({
-                    clientId: "318990435965-vfvab619el1pob93lvt1v2ipamf9apf7.apps.googleusercontent.com",
-                    scope: "email profile"
-                })
-                .then(() => {
-                    this.auth = window.gapi.auth2.getAuthInstance();
-                    this.onAuthChange(this.auth.isSignedIn.get());
-                    this.auth.isSignedIn.listen(this.onAuthChange);
-                });
-        });
+        loadClientAuth2(gapi, "318990435965-vfvab619el1pob93lvt1v2ipamf9apf7.apps.googleusercontent.com", "email profile")
+            .then(() => {
+                this.auth = gapi.auth2.getAuthInstance();
+                this.onAuthChange(this.auth.isSignedIn.get());
+                this.auth.isSignedIn.listen(this.onAuthChange);
+            });
     }
 
     onAuthChange = isSignedIn => {
